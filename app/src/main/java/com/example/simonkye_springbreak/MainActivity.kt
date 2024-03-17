@@ -6,6 +6,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -42,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         binding.languageRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             val langCode = when (findViewById<RadioButton>(checkedId).text.toString()) {
                 "English" -> "en"
-                "Korean" -> "kr"
+                "Korean" -> "ko"
                 "Chinese" -> "zh"
                 else -> "en"
             }
@@ -97,10 +98,20 @@ class MainActivity : AppCompatActivity() {
             val delta: Float = currentAcceleration - lastAcceleration
             acceleration = acceleration * 0.9f + delta
 
-            // Display a Toast message if
-            // acceleration value is over 12
-            if (acceleration > 12) {
-                Toast.makeText(applicationContext, "Shake event detected", Toast.LENGTH_SHORT).show()
+            if (acceleration > 10) {
+                val checkedButton = binding.languageRadioGroup.checkedRadioButtonId
+                if (checkedButton != -1) {
+                    val coordinate = when (findViewById<RadioButton>(checkedButton).text.toString()) {
+                        "English" -> Pair(51.51, 0.13)
+                        "Korean" -> Pair(37.55, 126.99)
+                        "Chinese" -> Pair(39.9, 116.41)
+                        else -> Pair(0, 0)
+                    }
+                    val geoUri = "geo:${coordinate.first},${coordinate.second}?z=10"
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(geoUri))
+                    startActivity(intent)
+                }
+
             }
         }
         override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
