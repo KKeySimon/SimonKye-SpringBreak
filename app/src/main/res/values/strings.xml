@@ -3,4 +3,5 @@
     <string name="en">English</string>
     <string name="kr">Korean</string>
     <string name="cn">Chinese</string>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>
